@@ -1,0 +1,149 @@
+<!--
+  NOTES:
+
+  + Props are immutable, passed fromt he parent and owned by the parent, once they 
+    are rendered thats it, no changes. We use this.state to do mutable things,
+    which are private to the component
+  + event are on components and use camelCase, on compile they are hidden
+  + ref is used to assign a name to a child component, so we can reference with 
+    this.props
+  + For this we needed to pass the child component back up to the parent, as thats where the 
+    state is, we can do this by pass the callback through to the child component
+    as a prop
+-->
+<html>
+  <head>
+    <title>Hello React</title>
+    <script src="http://fb.me/react-0.12.2.js"></script>
+    <script src="http://fb.me/JSXTransformer-0.12.2.js"></script>
+    <script src="http://code.jquery.com/jquery-1.10.0.min.js"></script>
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/showdown/0.3.1/showdown.min.js"></script>
+
+  </head>
+  <body>
+    <div id="content"></div>
+    <script type="text/jsx">
+      // initialisation
+      var converter = new Showdown.converter();
+
+      // components
+      var CommentBox = React.createClass({
+        loadCommentsFromServer: function(){
+          $.ajax({
+            url: this.props.url,
+            dataType: 'json',
+            success: function(data){
+              this.setState({data: data});
+            }.bind(this), // scope love
+            error: function(xhr,status,err){
+              console.error(this.props.url, status, err.toString());
+            }.bind(this)
+          });
+        },
+        handleCommentSubmit: function(comment){
+          var comments = this.state.data; // immutable
+          var newComments = comments.concat([comment]);
+          this.setState({data: newComments}); // optimistic update
+          $.ajax({
+            url: this.props.url,
+            dataType: 'json',
+            type: 'POST',
+            data: comment,
+            success: function(data){
+              this.setState({data: data});
+            }.bind(this), // scope love
+            error: function(xhr,status,err){
+              console.error(this.props.url, status, err.toString());
+            }.bind(this)
+          });
+        },
+        getInitialState: function(){
+          return {
+            data: []
+          };
+        },
+        componentDidMount: function(){
+          // runs when component loads for the first time
+          // fetch comments, then fetch every 2 seconds
+          this.loadCommentsFromServer();
+          setInterval(this.loadCommentsFromServer,this.props.pollInterval);
+        },
+        render: function() {
+          return (
+            <div className="commentBox">
+              <h1>Comments</h1>
+              <CommentList data={this.state.data} />
+              <CommentForm onCommentSubmit={this.handleCommentSubmit} />
+            </div>   
+          );
+        }
+      });
+
+      var CommentList = React.createClass({
+        render: function() {
+          var commentNodes = this.props.data.map(function(comment){
+            return (
+              <Comment author={comment.author}>
+                {comment.text}
+              </Comment>
+            );
+          });
+
+          return (
+            <div className="commentList">
+              {commentNodes}
+            </div>
+          );
+        }
+      });
+
+      var CommentForm = React.createClass({
+        handleSubmit: function(e){
+          e.preventDefault();
+          // get node values
+          var author = this.refs.author.getDOMNode().value.trim();
+          var text = this.refs.author.getDOMNode().value.trim();
+          if(!text || !author) {
+            return;
+          }
+          this.props.onCommentSubmit({author: author, text: text});
+          this.refs.author.getDOMNode().value = "";
+          this.refs.text.getDOMNode().value = "";
+          return;
+        },
+        render: function() {
+          return (
+            <form className="commentForm" onSubmit={this.handleSubmit}>
+              <input type="text" placeholder="Your Name" ref="author" />
+              <input type="text" placeholder="Say Something" ref="text" />
+              <input type="submit" value="Post" />
+            </form>
+          );
+        }
+      });
+
+      var Comment = React.createClass({
+        render: function() {
+          // this.props.children = any nested elements
+          // dangerousSetInnerHTML intentially hard to use, 
+          // otherwise it would render paragraph tags as strings. to protect from XSS
+          var rawMarkup = converter.makeHtml(this.props.children.toString());
+          return (
+            <div className="comment">
+              <h2 className="commentAuthor">
+                {this.props.author}
+              </h2>
+              <span dangerouslySetInnerHTML={{__html: rawMarkup}} />  
+            </div>
+          );
+        }
+      });
+
+      // lets go!
+      React.render(
+        <CommentBox url="http://localhost:3000/comments.json" pollInterval={2000} />,
+        document.getElementById("content")
+      );
+    </script>
+  </body>
+</html>
