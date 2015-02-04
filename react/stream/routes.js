@@ -8,17 +8,17 @@ module.exports = {
 	// main page markup
 	index: function(req, res){
 
-		Tweets.getTweets(0,0,function(tweets, pages){
+		Tweet.getTweets(0,0,function(tweets){
 			// render react to a string so we can send it to the page
 			var markup = React.renderComponentToString(
 				TweetsApp({
 					tweets: tweets
-				});
+				})
 			);
 
-			res.render('home'{
+			res.render('home',{
 				markup: markup,
-				state: JSON.stringify(tweets); // pass the latest state, can we do this directly into TweetsApp?!
+				state: JSON.stringify(tweets) // pass the latest state, can we do this directly into TweetsApp?!
 			});
 
 		});

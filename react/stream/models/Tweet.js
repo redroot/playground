@@ -24,11 +24,11 @@ schema.statics.getTweets = function(page, skip, callback) {
 					'twid active author avatar body date screenname', 
 					{skip: start, limit: per_page}
 				)
-			 .sort({date: desc})
+			 .sort({date: 'desc'})
 			 .exec(function(err,docs){
 			 		if(!err){
 			 			tweets = docs;
-			 			tweets.forEarch(function(tweet){
+			 			tweets.forEach(function(tweet){
 			 				tweet.active = true;
 			 			});
 			 		}

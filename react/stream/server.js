@@ -19,6 +19,7 @@ app.disable('etag');
 
 //db connection
 mongoose.connect('mongodb://localhost/react-tweets');
+
 // twitter connection
 var twit = new ntwitter(config.twitter);
 
