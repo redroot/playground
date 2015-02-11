@@ -5,6 +5,7 @@ module.exports = BarChart = React.createClass({
 		return (
 			<div className="grid grid__bottom-left chart bar-chart">
 				Im a bar chart!
+				{JSON.stringify(this.props.data)}
 			</div>
 		);
 	}
