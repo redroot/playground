@@ -13,7 +13,7 @@ var app  = express();
 var port = process.env.PORT || 8080;
 
 // set up the app
-app.engine('handlebars', exphbs({ defaultLayout: 'main'})); 
+app.engine('handlebars', exphbs({ defaultLayout: 'main'}));
 app.set('view engine','handlebars');
 app.disable('etag');
 
@@ -36,6 +36,6 @@ var server = http.createServer(app).listen(port, function(){
 var io_server = io.listen(server);
 
 // finally setup streamHandler
-twit.stream('statuses/filter', { track: 'rugby, #rugby' }, function(stream){
+twit.stream('statuses/filter', { track: 'netball, #netball' }, function(stream){
 	streamHandler(stream,io_server);
 });
