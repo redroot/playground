@@ -1,5 +1,10 @@
 var React = require('react'),
-		DataStore = require('../stores/DataStore');
+		DataStore = require('../stores/DataStore'),
+		DataList = require('./DataList.react'),
+		BarChart = require('./BarChart.react'),
+		PieChart = require('./PieChart.react'),
+		LineChart = require('./LineChart.react');
+
 
 module.exports = DashboardApp = React.createClass({
 	getInitialState: function(){
@@ -16,8 +21,10 @@ module.exports = DashboardApp = React.createClass({
 	render: function(){
 		return (
 			<div className="dashboard">
-				I am a dashboard
-				{JSON.stringify(this.state.data)}
+				<LineChart data={this.state.data} />
+				<BarChart data={this.state.data} />
+				<PieChart data={this.state.data} />
+				<DataList data={this.state.data} />
 			</div>
 		);
 	},

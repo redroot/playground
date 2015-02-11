@@ -4,4 +4,36 @@
 
 body {
 	background: #f0f0f0;
+	padding: 0;
+	margin: 0;
+}
+
+.grid {
+	display: block;
+  overflow:  hidden;
+  position: fixed;
+  width: 50vw;
+  height: 50vh;
+  object-fit: cover;
+}
+
+.grid__top-left { 
+	background: #fff; 
+	top: 0;
+	left: 0;
+}
+.grid__top-right {
+	background: #ffe;
+	top: 0; 
+	right: 0;
+}
+.grid__bottom-left {
+	background: #ffc;
+	bottom: 0;
+	left: 0;
+}
+.grid__bottom-right {
+	background: #ffd;
+	bottom: 0;
+	right: 0;
 }
