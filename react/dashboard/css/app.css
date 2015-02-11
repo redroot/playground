@@ -6,6 +6,7 @@ body {
 	background: #f0f0f0;
 	padding: 0;
 	margin: 0;
+	font-family: Helvetica, Arial, sans-serif;
 }
 
 .grid {
@@ -18,7 +19,7 @@ body {
 }
 
 .grid__top-left { 
-	background: #fff; 
+	background: #f0f0f0; 
 	top: 0;
 	left: 0;
 }
@@ -33,7 +34,47 @@ body {
 	left: 0;
 }
 .grid__bottom-right {
-	background: #ffd;
+	background: #fff;
 	bottom: 0;
 	right: 0;
 }
+
+.data-list {
+	margin: 0;
+	padding: 10px 0px;
+}
+
+.data-list-header {
+	padding: 15px;
+	margin: 0;
+	font-size: 16px;
+	background: #f0f0f0;
+	overflow: hidden;
+}
+
+.data-list-element {
+	list-style: none;
+	display: block;
+	overflow: hidden;
+	color: #333;
+	font-size: 14px;
+	padding: 5px 15px;
+}
+
+.data-list-element:nth-child(2n+1) {
+	background: #fcfcfc;
+}
+
+.data-list-element strong {
+	font-size: 15px;
+}
+
+.data-list-element-timestamp {
+	float: right;
+	color: #999;
+}
+
+.js-new-data-btn {
+	float: right;
+}
+

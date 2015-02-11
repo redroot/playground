@@ -26,6 +26,15 @@ var DataStore = _.extend({},EventEmitter.prototype, {
 		return _dataPoints;
 	},
 
+	getBandedData: function(){
+		return _.reduce(_dataPoints, function(memo, obj){
+			var band  = Math.floor(obj.y/10);
+			var label = (parseInt(band)*10) + "-" + ((parseInt(band)+1)*10);
+			memo[label] = (memo[label] || 0) + 1;
+			return memo;
+		}, {});
+	},
+
 	emitChange: function(){
 		this.emit('change');
 	},
@@ -42,10 +51,11 @@ var DataStore = _.extend({},EventEmitter.prototype, {
 
 // register with dispatcher
 _dispatchToken = DashboardDispatcher.register(function(payload){
+	var action = payload.action;
 
 	switch(action.actionType){
 		case DashboardConstants.DATA_ADD:
-			_addDataPoint(moment().unix(), action.data);
+			_addDataPoint(action.time, action.data);
 			break;
 		default:
 			return true;
@@ -58,7 +68,7 @@ _dispatchToken = DashboardDispatcher.register(function(payload){
 
 // preload data store with data
 _(40).times(function(n){
-	var time  = moment().subtract(n,'minutes').unix(),
+	var time  = moment().subtract(40-n,'minutes').unix(),
 			value = Math.floor(Math.random() * 100);
 	_addDataPoint(time, value)
 });

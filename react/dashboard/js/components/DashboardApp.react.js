@@ -9,7 +9,8 @@ var React = require('react'),
 module.exports = DashboardApp = React.createClass({
 	getInitialState: function(){
 		return {
-			data: DataStore.getData()
+			data: DataStore.getData(),
+			bandedData: DataStore.getBandedData()
 		}
 	},
 	componentDidMount: function() {
@@ -22,15 +23,16 @@ module.exports = DashboardApp = React.createClass({
 		return (
 			<div className="dashboard">
 				<LineChart data={this.state.data} />
-				<BarChart data={this.state.data} />
-				<PieChart data={this.state.data} />
+				<BarChart data={this.state.bandedData} />
+				<PieChart data={this.state.bandedData} />
 				<DataList data={this.state.data} />
 			</div>
 		);
 	},
 	_onChange: function(){
 		this.setState({
-			data: DataStore.getData()
+			data: DataStore.getData(),
+			bandedData: DataStore.getBandedData()
 		});
 	}
 });

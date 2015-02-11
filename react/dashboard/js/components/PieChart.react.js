@@ -5,6 +5,7 @@ module.exports = PieChart = React.createClass({
 		return (
 			<div className="grid grid__top-right chart line-chart">
 				Im a pie chart!
+				{JSON.stringify(this.props.data)}
 			</div>
 		);
 	}
