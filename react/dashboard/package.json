@@ -7,7 +7,9 @@
     "flux": "^2.0.0",
     "react": "^0.12.0",
     "underscore": "^1.7.0",
-    "moment": "2.9.0"
+    "moment": "2.9.0",
+    "chart.js": "1.0.1",
+    "color-scheme": "0.0.5"
   },
   "devDependencies": {
     "browserify": "~6.2.0",

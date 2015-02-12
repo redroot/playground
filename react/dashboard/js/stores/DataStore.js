@@ -7,13 +7,13 @@ var DashboardDispatcher = require('../dispatcher/DashboardDispatcher'),
 // private var for our data
 
 var _dataPoints    = [],
-		_limit         = 60,
+		_limit         = 50,
 		_dispatchToken = null
 
 // private functions
 
 var _addDataPoint = function(time,data){
-	var update = _dataPoints.slice(0,_limit);
+	var update = _.last(_dataPoints,_limit);
 	update.push({x: time, y: data })
 	_dataPoints = update;
 }
@@ -27,12 +27,24 @@ var DataStore = _.extend({},EventEmitter.prototype, {
 	},
 
 	getBandedData: function(){
+		var memo = {
+			"0-10": 0,
+			"10-20": 0,
+			"20-30": 0,
+			"30-40": 0,
+			"40-50": 0,
+			"50-60": 0,
+			"60-70": 0,
+			"70-80": 0,
+			"80-90": 0,
+			"90-100": 0
+		}; // pants but meh
 		return _.reduce(_dataPoints, function(memo, obj){
 			var band  = Math.floor(obj.y/10);
 			var label = (parseInt(band)*10) + "-" + ((parseInt(band)+1)*10);
-			memo[label] = (memo[label] || 0) + 1;
+			memo[label]++;
 			return memo;
-		}, {});
+		}, memo);
 	},
 
 	emitChange: function(){
@@ -67,7 +79,7 @@ _dispatchToken = DashboardDispatcher.register(function(payload){
 });
 
 // preload data store with data
-_(40).times(function(n){
+_(_limit).times(function(n){
 	var time  = moment().subtract(40-n,'minutes').unix(),
 			value = Math.floor(Math.random() * 100);
 	_addDataPoint(time, value)

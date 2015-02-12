@@ -14,12 +14,12 @@ module.exports = DataList = React.createClass({
 		setInterval(function(){
 			console.log('adding random data');
 			this.newRandomData();
-		}.bind(this),15000);
+		}.bind(this),3000);
 	},
 	render: function(){
 		return (
 			<div className="grid grid__bottom-right">
-				<h2 className="data-list-header">
+				<h2 className="grid-header">
 					Last 12 data points
 					<button type="button" className="btn js-new-data-btn" onClick={this.newRandomData} >
 						Add Random Data
