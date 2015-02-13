@@ -69,6 +69,24 @@ body {
 	color: #999;
 }
 
+.data-list-trans-enter {
+  opacity: 0.01;
+  transition: opacity .5s ease-in;
+}
+
+.data-list-trans-enter.data-list-trans-enter-active {
+  opacity: 1;
+}
+
+.data-list-trans-leave {
+  opacity: 1;
+  transition: opacity .5s ease-in;
+}
+
+.data-list-trans-leave.data-list-trans-leave-active {
+  opacity: 0.01;
+}
+
 .chart-canvas {
 	margin: 5px;
 }

@@ -34,13 +34,11 @@ module.exports = PieChart = React.createClass({
 	},
 	_transformedData: function(data){
 		var colorIndex = -1;
-		console.log(_colors);
 		return _.map(_.keys(data),function(key){
 			colorIndex++;
 			if(colorIndex > _colors.length - 1) {
 				colorIndex = -1;
 			}
-			console.log(_colors[colorIndex]);
 			return {
 				value: data[key],
 				label: key,

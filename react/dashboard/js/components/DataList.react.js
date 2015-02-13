@@ -1,7 +1,9 @@
-var React = require('react'),
+var React = require('react/addons'),
 		DashboardActions = require('../actions/DashboardActions'),
 		moment = require('moment'),
 		_ = require('underscore');
+
+var ReactCSSTransitionGroup = React.addons.CSSTransitionGroup;
 
 module.exports = DataList = React.createClass({
 	newRandomData: function(){
@@ -12,7 +14,6 @@ module.exports = DataList = React.createClass({
 	},
 	componentDidMount: function() {
 		setInterval(function(){
-			console.log('adding random data');
 			this.newRandomData();
 		}.bind(this),3000);
 	},
@@ -25,7 +26,7 @@ module.exports = DataList = React.createClass({
 						Add Random Data
 					</button>
 				</h2>
-				<ul className="data-list">
+				<ReactCSSTransitionGroup component="ul" className="data-list" transitionName="data-list-trans">
 				{_.map(_.last(this.props.data,[12]).reverse(),function(data){
 					return (
 						<li key={data.x + (Math.floor(Math.random() * 10000))} className="data-list-element">
@@ -36,7 +37,7 @@ module.exports = DataList = React.createClass({
 						</li>
 					);
 				})}
-				</ul>
+				</ReactCSSTransitionGroup>
 			</div>
 		);
 	}
