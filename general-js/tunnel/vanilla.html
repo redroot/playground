@@ -1,0 +1,129 @@
+<!doctype html>
+
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <title>Tunnel</title>
+  <meta name="description" content="Auth0">
+  <meta name="author" content="Me">
+
+  <!--[if lt IE 9]>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv.js"></script>
+  <![endif]-->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <style type="text/css">
+    body {
+      padding: 0;
+      margin: 0;
+      background: black;
+      text-align: center;
+    }
+    #canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      left: 0;
+      background: #000;
+      margin: 0 auto;
+    }
+  </style>
+</head>
+
+<body>
+  <canvas id="canvas" width="1000" height="1000"></canvas>
+  <script>
+    var canvas = document.getElementById('canvas');
+    var context = canvas.getContext('2d');
+    context.strokeStyle = '#fff';
+    context.strokeWidth = '2px';
+
+    var centerPoint = { x: 500, y:750 };
+    var radiusLimit = 1200;
+    var newshapeRadiusLimit = 100;
+    var sideIncreaseLimit = 8;
+    var sideIncreaseStart = 1;
+    var sideIncreaseCounter = sideIncreaseStart;
+
+    var polygon = function(n, radius) {
+      return { sides: n, radius: radius }
+    }
+
+    var initialShapes = [
+      polygon(3, 10)
+    ];
+
+    var transformShapes = function(shapes) {
+      var newShapes = [];
+
+      for(var i = 0; i < shapes.length; i++){
+        var shape = shapes[i];
+        if (shape.radius < radiusLimit) {
+          newShapes.push(polygon(shape.sides, shape.radius + 20));
+        }
+      }
+
+      if (newShapes[0] && newShapes[0].radius > newshapeRadiusLimit) {
+        sideIncreaseCounter++;
+        if (sideIncreaseCounter == sideIncreaseLimit) {
+          sideIncreaseCounter = sideIncreaseStart;
+          var sides = newShapes[0].sides > sideIncreaseLimit ? 3 : newShapes[0].sides+1;
+          newShapes.unshift(polygon(sides, 10));
+        } else {
+          newShapes.unshift(polygon(newShapes[0].sides, 10));
+        }
+      }
+
+      return newShapes;
+    }
+
+    var drawShapes = function(shapes) {
+      for (var i = 0; i < shapes.length; i++) {
+        var shape = shapes[i];
+        var points = [];
+        var angle = (2 * Math.PI) / shape.sides;
+
+        for (var s = 0; s < shape.sides; s++) {
+          points.push({
+            x: centerPoint.x + Math.round(shape.radius * Math.sin(s * angle)),
+            y: centerPoint.y + Math.round(shape.radius * Math.cos(s * angle))
+          });
+        }
+
+        for (var p = 0; p < shape.sides; p++) {
+          var start = points[p];
+          var end = points[p == (shape.sides-1) ? 0 : p+1];
+
+          context.beginPath();
+          context.moveTo(start.x, start.y);
+          context.lineTo(end.x, end.y);
+          context.stroke();
+          context.closePath();
+        }
+      }
+    }
+
+    var moveCenter = function () {
+      if (centerPoint.y >= 800) {
+        centerPoint.y--;
+      } else if (centerPoint.y > 200 && centerPoint.y < 800 ) {
+        centerPoint.y--;
+      }
+    }
+
+    var clear = function() {
+      context.clearRect(0, 0, canvas.width, canvas.height);
+    }
+
+    var lastShapes = initialShapes;
+
+    setInterval(function() {
+      clear();
+      lastShapes = transformShapes(lastShapes);
+      drawShapes(lastShapes);
+      moveCenter();
+    }, 50);
+  </script>
+</body>
+</html>
