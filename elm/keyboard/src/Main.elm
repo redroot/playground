@@ -41,7 +41,10 @@ initialNotes =
     , { name = "G#", colour = Black, label = "Y", keyCode = 89, playing = False }
     , { name = "A", colour = White, label = "H", keyCode = 72, playing = False }
     , { name = "Bb", colour = Black, label = "U", keyCode = 85 , playing = False }
-    , { name = "B", colour = White, label = "J", keyCode = 75, playing = False }
+    , { name = "B", colour = White, label = "J", keyCode = 74 , playing = False }
+    , { name = "C2", colour = White, label = "K", keyCode = 75 , playing = False }
+    , { name = "C#2", colour = Black, label = "O", keyCode = 79, playing = False }
+    , { name = "D2", colour = White, label = "L", keyCode = 76, playing = False }
     ]
 
 init : ( Model, Cmd Msg )
@@ -67,6 +70,9 @@ toFrequency key =
     "A" -> 220.0
     "Bb" -> 233.08
     "B" -> 246.94
+    "C2" -> 261.62
+    "C#2" -> 277.18
+    "D2" -> 293.66
     _ -> 0
 
 -- MESSAGES

@@ -7,20 +7,26 @@ var mountNode = document.getElementById('main');
 var audioContext = new AudioContext()
 var filter = audioContext.createBiquadFilter();
 filter.connect(audioContext.destination);
-var oscillator = null;
+var oscillators = {};
+
+var freqToKey = function(frequency) {
+  return frequency.toString();
+}
 
 var startOscillator = function(frequency) {
-  oscillator && oscillator.stop(0)
-  oscillator = audioContext.createOscillator()
-  oscillator.type = 'sawtooth'
-  oscillator.frequency.value = frequency
-  oscillator.connect(filter)
-  oscillator.start(0)
+  var key = freqToKey(frequency);
+  if (oscillators[key]) { return true; }
+  oscillators[key] = audioContext.createOscillator()
+  oscillators[key].type = 'sawtooth';
+  oscillators[key].frequency.value = frequency;
+  oscillators[key].connect(filter);
+  oscillators[key].start(0);
 }
 
 var stopOscillator = function (frequency) {
-  oscillator && oscillator.stop(0)
-  oscillator = null;
+  var key = freqToKey(frequency);
+  oscillators[key] && oscillators[key].stop(0)
+  oscillators[key] = null;
 }
 
 // .embed() can take an optional second argument. This would be an object describing the data we need to start a program, i.e. a userID or some token
