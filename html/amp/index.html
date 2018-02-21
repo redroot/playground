@@ -1,0 +1,57 @@
+<!doctype html>
+<html amp lang="en"> <!-- amp in html tag required, head and body required -->
+  <head>
+    <meta charset="utf-8">
+    <script async src="https://cdn.ampproject.org/v0.js"></script><!-- identifies and requires MAP JS lib -->
+    <title>Hello, AMPs</title>
+    <link rel="canonical" href="http://example.ampproject.org/article-metadata.html"><!-- points to the non amp version -->
+    <meta name="viewport" content="width=device-width,minimum-scale=1,initial-scale=1">
+    <script type="application/ld+json">
+      // metadata for listing on Google results
+      {
+        "@context": "http://schema.org",
+        "@type": "NewsArticle",
+        "headline": "Open-source framework for publishing content",
+        "datePublished": "2015-10-07T12:02:41Z",
+        "image": [
+          "logo.jpg"
+        ]
+      }
+    </script>
+    <!-- hide the body until padd is ready -->
+    <style amp-boilerplate>body{-webkit-animation:-amp-start 8s steps(1,end) 0s 1 normal both;-moz-animation:-amp-start 8s steps(1,end) 0s 1 normal both;-ms-animation:-amp-start 8s steps(1,end) 0s 1 normal both;animation:-amp-start 8s steps(1,end) 0s 1 normal both}@-webkit-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@-moz-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@-ms-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@-o-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}</style><noscript><style amp-boilerplate>body{-webkit-animation:none;-moz-animation:none;-ms-animation:none;animation:none}</style></noscript>
+    <style amp-custom>
+      /* any custom style goes here */
+      body {
+        background-color: white;
+      }
+      amp-img {
+        background-color: gray;
+        border: 1px solid black;
+      }
+      /*
+        Not all styles are supported, so no !important, no inline attributes, no
+        link[rel=stylesheet] except for fonts. no classes starting with -amp-start,
+        nor behaviour or -moz-binding keys.
+        Additionally all styles must be within a single amp-custom style tag
+        in the head and under 50kb
+        Recommended using will-change or transform: translateZ(0) to make sure
+        animations are GPU enabled (meaning only use opacity and transform)
+
+      */
+      /*
+        For responsiveness, srcset works for images out of the box, but elements have
+        an additional `layout` attribute, e.g. fixed, responsive, nodisplay, fixed-height, fill, etc
+        Basically helps pre-plan what the page will look like. You can also do per element media queries
+      */
+    </style>
+  </head>
+  <body>
+    <h1>Welcome to the mobile web</h1>
+    <!--
+      amp uses their own tags to do special things like control network requests and
+      understand the layout of the page before assets load
+    -->
+    <amp-img src="welcome.jpg" alt="Welcome" height="400" width="800"></amp-img>
+  </body>
+</html>
