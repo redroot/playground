@@ -1,6 +1,6 @@
 use std::path::PathBuf;
 use std::fs::File;
-use std::io::{BufRead, BufReader};
+use std::io::{self, Write, BufRead, BufReader};
 use std::collections::HashMap;
 use anyhow::{Result, anyhow};
 use structopt::StructOpt;
@@ -47,12 +47,13 @@ trait EventSummary {
 
 #[derive(Debug)]
 struct ViewedPageSummary {
-    pageview_counter: HashMap<String, i32>
+    pageview_counter: HashMap<String, i32>,
+    total_counter: i32
 }
 
 impl EventSummary for ViewedPageSummary {
     fn new() -> ViewedPageSummary {
-        ViewedPageSummary { pageview_counter: HashMap::new()}
+        ViewedPageSummary { pageview_counter: HashMap::new(), total_counter: 0 }
     }
 
     fn ingest(&mut self, event: &EventType) -> () {
@@ -60,6 +61,7 @@ impl EventSummary for ViewedPageSummary {
             EventType::ViewedPage(payload) => {
                 let current = self.pageview_counter.entry(payload.path.clone()).or_insert(0);
                 *current += 1;
+                self.total_counter += 1;
                 ()
             },
             _ => ()
@@ -67,7 +69,15 @@ impl EventSummary for ViewedPageSummary {
     }
 
     fn summarize(&self) -> String {
-        String::from(format!("We found page views! And pageview counter {:?}", self.pageview_counter))
+        let mut base = String::from("Pageview Summary\n------------\n");
+        let totals = format!("Total: {}\n", self.total_counter);
+        for (key, value) in self.pageview_counter.clone() {
+            let line = format!("{}\t\t\t{}\n", key, value);
+            base.push_str(&line);
+        }
+        base.push_str("-----------\n");
+        base.push_str(&totals);
+        base
     }
 } 
 
@@ -109,7 +119,7 @@ fn process_file(path: &PathBuf) -> Result<()> {
         }
     }
 
-    println!("Summarised: {:?}", summarizer.summarize());
+    io::stdout().write_all(summarizer.summarize().as_bytes())?;
 
     Ok(())
 }
@@ -120,11 +130,4 @@ fn main() -> Result<()> {
 }
 
 
-// inject collector based on commands, process each line and run through collector after conversion
-// build a result object and then send to std out at the end
-// implement using a trait, handle_event, internal counters etc
-
-// Todo 
-// 2) add Viewed Page summary mode
 // 3) add Conversion summary mode
-// add total pageview, iterator over in atable format with colours to std out
