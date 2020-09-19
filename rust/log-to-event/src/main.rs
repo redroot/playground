@@ -83,15 +83,14 @@ fn build_conversion_event(parts: &Vec<&str>) -> Result<EventType> {
     Ok(EventType::Conversion(payload))
 }
 
-fn process_line(raw: String) -> EventType {
+fn process_line(raw: String) -> Result<EventType> {
     let parts: Vec<&str> = raw.split(LOG_COLUMN_SEPARATOR).collect();
     let result = match parts[0] {
         "Viewed Page" => build_viewed_page_event(&parts),
         "Conversion" => build_conversion_event(&parts),
         unknown => Err(anyhow!("Unknown event type {:?}", unknown))
     };
-    println!("result: {:?}", result);
-    result.unwrap()
+    result
 }
 
 
@@ -102,14 +101,12 @@ fn process_file(path: &PathBuf) -> Result<()> {
     // next up, switch out the summary based on command e.g. Webpage Summary
     let mut summarizer = ViewedPageSummary::new();
 
-    let events: Vec<EventType> = reader
-        .lines()
-        .map(|line| process_line(line.unwrap()))
-        .collect::<Vec<EventType>>(); // change to reduce later
-
-    // later can do this as a reduce step within the same loop as we convert them
-    for event in events.iter() {
-        summarizer.ingest(event);
+    for line in reader.lines() {
+        let event_result = process_line(line.unwrap());
+        match event_result {
+            Ok(event) => summarizer.ingest(&event),
+            Err(_) => ()
+        }
     }
 
     println!("Summarised: {:?}", summarizer.summarize());
