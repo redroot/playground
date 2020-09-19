@@ -1,0 +1,9 @@
+Viewed Page;{ "user_id": 123, "path": "/a-path", "query": ""}
+Viewed Page;{ "user_id": 123, "path": "/a-path", "query": "?foo=1"}
+Viewed Page;{ "user_id": 78, "path": "/a-path", "query": ""}
+Viewed Page;{ "user_id": 79, "path": "/another-way", "query": ""}
+Viewed Page;{ "user_id": 123, "path": "/a-third-path", "query": ""}
+Viewed Page;{ "user_id": 123, "path": "/a-path", "query": ""}
+Conversion;{ "user_id": 78, "amount": 100 }
+Viewed Page;{ "user_id": 78, "path": "/a-path", "query": ""}
+Conversion;{ "user_id": 123, "amount": 200 }
