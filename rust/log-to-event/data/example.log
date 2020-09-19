@@ -7,3 +7,4 @@ Viewed Page;{ "user_id": 123, "path": "/a-path", "query": ""}
 Conversion;{ "user_id": 78, "amount": 100 }
 Viewed Page;{ "user_id": 78, "path": "/a-path", "query": ""}
 Conversion;{ "user_id": 123, "amount": 200 }
+Conversion;{ "user_id": 123, "amount": 260 }

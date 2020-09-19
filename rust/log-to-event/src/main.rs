@@ -13,8 +13,9 @@ const LOG_COLUMN_SEPARATOR: char = ';';
 struct Opts {
     #[structopt(parse(from_os_str))]
     infile: PathBuf,
-    // mode = event_summary/e || pageviews || conversions || for user
-    // user id for user 
+
+    #[structopt(short = "m", long = "mode", default_value = "pageviews")]
+    mode: String
 }
 
 #[derive(Serialize, Deserialize, Debug)]
@@ -75,11 +76,47 @@ impl EventSummary for ViewedPageSummary {
             let line = format!("{}\t\t\t{}\n", key, value);
             base.push_str(&line);
         }
-        base.push_str("-----------\n");
+        base.push_str("-----------\n\n");
         base.push_str(&totals);
         base
     }
 } 
+
+#[derive(Debug)]
+struct ConversionSummary {
+    user_amount_counter: HashMap<i32, f32>
+}
+
+impl EventSummary for ConversionSummary {
+    fn new() -> ConversionSummary {
+        ConversionSummary { user_amount_counter: HashMap::new() }
+    }
+
+    fn ingest(&mut self, event: &EventType) -> () {
+        match event {
+            EventType::Conversion(payload) => {
+                let current = self.user_amount_counter.entry(payload.user_id.clone()).or_insert(0.0);
+                *current += payload.amount;
+                ()
+            },
+            _ => ()
+        };
+    }
+
+    fn summarize(&self) -> String {
+        let mut base = String::from("Conversion Summary\n------------\n");
+        let mut total = 0.0;
+        for (key, value) in self.user_amount_counter.clone() {
+            let line = format!("User:{}\t\t\t£{}\n", key, value);
+            total += value;
+            base.push_str(&line);
+        }
+        base.push_str("-----------\n");
+        let totals = format!("Total Amount: £{}\n\n", total);
+        base.push_str(&totals);
+        base
+    }
+}
 
 // some redundancy across these two files
 fn build_viewed_page_event(parts: &Vec<&str>) -> Result<EventType> {
@@ -104,30 +141,37 @@ fn process_line(raw: String) -> Result<EventType> {
 }
 
 
-fn process_file(path: &PathBuf) -> Result<()> {
-    let file = File::open(path.to_str().unwrap())?;
+fn process_file(opts: Opts) -> Result<()> {
+    let file = File::open(opts.infile.to_str().unwrap())?;
     let reader = BufReader::new(file);
 
-    // next up, switch out the summary based on command e.g. Webpage Summary
-    let mut summarizer = ViewedPageSummary::new();
+    // I want to switch between summaries using both, but as its static
+    // that requires either using an Any type or bigger enum wrapping,
+    // which doesnt work that well with traits. Id had to have a function which
+    // matches to input which Impl EventSummary and return a string/ingest etc,
+    // so far now Im just doing both summaries!
+    let mut vp_summarizer = ViewedPageSummary::new();
+    let mut cv_summarizer = ConversionSummary::new();
 
     for line in reader.lines() {
         let event_result = process_line(line.unwrap());
         match event_result {
-            Ok(event) => summarizer.ingest(&event),
+            Ok(event) => {
+                vp_summarizer.ingest(&event);
+                cv_summarizer.ingest(&event)
+            },
             Err(_) => ()
         }
     }
 
-    io::stdout().write_all(summarizer.summarize().as_bytes())?;
+    io::stdout().write_all(vp_summarizer.summarize().as_bytes())?;
+    io::stdout().write_all(cv_summarizer.summarize().as_bytes())?;
 
     Ok(())
 }
 
 fn main() -> Result<()> {
     let opts = Opts::from_args();
-    process_file(&opts.infile)
+    process_file(opts)
 }
 
-
-// 3) add Conversion summary mode
