@@ -1,0 +1,14 @@
+{
+  "name": "tangram",
+  "version": "1.0.0",
+  "description": "- Follows this tutorial https://www.tangram.dev/docs/getting_started/train",
+  "main": "predict.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@tangramdotdev/tangram": "^0.7.1"
+  }
+}
